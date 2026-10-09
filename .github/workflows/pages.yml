@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - claude/magical-albattani-b1xpmx
+      - claude/magical-lamport-udd32y
   workflow_dispatch:
 
 permissions:
