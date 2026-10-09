@@ -107,7 +107,7 @@ input[type=range]{width:150px;accent-color:var(--blue)}
 <body oncontextmenu="return false;">
 <div class="app">
   <div class="stage">
-    <canvas id="gl" tabindex="0" aria-label="Modello 3D della Gottardo Arena con cubo e ribbon LED"></canvas>
+    <canvas id="gl" tabindex="0" aria-label="Modello 3D della Gottardo Arena con cubo, ribbon e LED sotto"></canvas>
     <div class="hint" id="hint">Trascina per ruotare, rotella per lo zoom. W A S D o frecce per muoverti, Q / E per scendere e salire.</div>
     <div class="views" id="views" role="group" aria-label="Punti di vista"></div>
   </div>
@@ -115,7 +115,7 @@ input[type=range]{width:150px;accent-color:var(--blue)}
   <aside class="panel">
     <header>
       <h1>Anteprima sponsor LED</h1>
-      <p>Gottardo Arena, Ambrì. Carica la grafica dello sponsor e guarda come appare sul cubo e sul ribbon.</p>
+      <p>Gottardo Arena, Ambrì. Carica la grafica dello sponsor e guarda come appare sul cubo, sul ribbon e sui LED sotto.</p>
     </header>
 
     <section aria-labelledby="h-cube">
@@ -196,6 +196,37 @@ input[type=range]{width:150px;accent-color:var(--blue)}
       <label class="check"><input type="checkbox" id="clubBg" checked> Grafica del club sul resto del ribbon</label>
     </section>
 
+
+    <section aria-labelledby="h-low">
+      <h2 id="h-low">LED sotto</h2>
+      <p class="spec">7 pannelli alti <b>144 px</b> sul parapetto della tribuna bassa, sopra il vetro: A1, A2, C1 e C2 sul lato lungo, E1 ed E2 sul lato corto. C2, D ed E1 sono attaccati e girano l'angolo.</p>
+      <div class="field">
+        <label for="lowMode">Grafica</label>
+        <select id="lowMode">
+          <option value="each">Un file per ogni pannello</option>
+          <option value="tile">Una grafica ripetuta su tutti i pannelli</option>
+        </select>
+      </div>
+      <div class="need"><span>Formato richiesto</span><b id="needLow">7 file alti 144 px</b></div>
+      <p class="spec" id="needLowNote" style="margin-top:-4px"></p>
+      <svg class="map" id="mapLow" viewBox="0 0 320 210" role="img" aria-label="Pianta con la posizione dei pannelli LED sotto"></svg>
+      <div id="tileLow" hidden>
+        <div class="drop" id="dropLow" tabindex="0" role="button" aria-label="Carica grafica ripetuta per i LED sotto">
+          <strong>Carica la grafica da ripetere</strong>
+          <span>Alta 144 px, larghezza libera. PNG, JPG, MP4 o MOV.</span>
+        </div>
+        <input type="file" id="fileLow" accept="image/png,image/jpeg,video/mp4,video/quicktime,.png,.jpg,.jpeg,.mp4,.m4v,.mov,.qt" hidden>
+        <div class="file" id="infoLow"><span class="name" id="nameLow"></span><button class="btn" id="clearLow">Rimuovi</button></div>
+        <div class="status" id="statusLow" role="status"></div>
+      </div>
+      <div id="eachLow"></div>
+      <div class="row" id="fitLowRow"><label>Se il formato non coincide</label>
+        <div class="seg" data-target="low" role="group" aria-label="Adattamento LED sotto">
+          <button data-fit="contain" aria-pressed="true">Adatta</button><button data-fit="cover" aria-pressed="false">Riempi</button><button data-fit="stretch" aria-pressed="false">Stira</button>
+        </div>
+      </div>
+    </section>
+
     <section aria-labelledby="h-view">
       <h2 id="h-view">Vista</h2>
       <div class="row" style="margin-top:6px"><label for="lights">Luci dell'arena</label><input type="range" id="lights" min="0.15" max="1.3" step="0.05" value="1"></div>
@@ -203,7 +234,7 @@ input[type=range]{width:150px;accent-color:var(--blue)}
       <div class="vids" id="vids"><button class="btn" id="playPause">Pausa video</button><button class="btn" id="restart">Riavvia dall'inizio</button></div>
       <div class="row" id="shotRow" style="display:none"><button class="btn primary" id="shot">Salva immagine dell'anteprima</button></div>
       <p class="note"><b>Per muoverti:</b> W A S D o le frecce per avanzare e spostarti di lato, Q ed E per scendere e salire, tieni premuto Shift per andare più veloce. Clicca prima sulla vista 3D se i tasti non rispondono.</p>
-      <p class="note">Il modello dell'arena è semplificato; cubo e ribbon sono in scala reale (cubo da 108 m², ribbon da 220 m). Tutto avviene nel browser: i file non vengono caricati da nessuna parte.</p>
+      <p class="note">Il modello dell'arena è semplificato; cubo e ribbon sono in scala reale (cubo da 108 m², ribbon da 220 m). I LED sotto sono calcolati a 144 px per metro, quindi pannelli alti 1 m. Tutto avviene nel browser: i file non vengono caricati da nessuna parte.</p>
     </section>
   </aside>
 </div>
@@ -218,6 +249,31 @@ const PX_PER_M = 96;
 const CUBE = { w:6, h:4.5, pxW:1296, pxH:972, sponsorH:729, centerY:13.6 };
 const RIB  = { hx:37.607, hz:23.607, c:10.607, y0:6.45, h:1, totalPx:21120 };
 const SEG_PX = { A:5184, B:1440, C:2496 };
+/* LED sotto: 144 px di altezza. Si assume 144 px per metro (pitch ~6,9 mm, moduli da 0,5 × 1 m).
+   I pannelli stanno sul fronte della tribuna bassa (stesso ottagono del primo gradino).
+   Come nella foto: dalla tribuna opposta i pannelli del lato corto (E) stanno a sinistra.
+   side = indice del lato dell'ottagono (4 lato corto C verso -x, 5 diagonale, 6 lato lungo A),
+   at = metri dall'inizio del lato, nel verso di lettura dall'interno dell'arena. */
+const LOW = { pxPerM:144, pxH:144, y0:1.55, base:1.1, ring:[31.8,16.8,7.5/Math.SQRT2] }; // smusso dell'angolo = diagonale di 7,5 m, esattamente D // y0 = bordo inferiore del LED, base = cima del muro della tribuna
+const LOW_PANELS = [
+  {id:'A1', px:864,  side:6},
+  {id:'A2', px:1368, side:6},
+  {id:'C1', px:1368, side:6},
+  {id:'C2', px:864,  side:6, at:0},        // attaccato a D
+  {id:'D',  px:1080, side:5, at:0},        // occupa tutta la diagonale
+  {id:'E1', px:792,  side:4, at:'end'},    // attaccato a D
+  {id:'E2', px:1008, side:4, at:0},        // in fondo al lato corto, staccato
+];
+// Lato lungo come nello schema: A1 e C2 arrivano agli angoli, A1-A2 e C1-C2 staccati di poco, spazio grande al centro.
+(function(){
+  const P=id=>LOW_PANELS.find(p=>p.id===id), L=id=>P(id).px/LOW.pxPerM;
+  const longLen=2*(LOW.ring[0]-LOW.ring[2]);
+  const spare=longLen-L('A1')-L('A2')-L('C1')-L('C2');
+  const small=spare*35/248, mid=spare*178/248;   // proporzioni dei vuoti nello schema
+  P('C1').at=L('C2')+small;
+  P('A2').at=P('C1').at+L('C1')+mid;
+  P('A1').at=P('A2').at+L('A2')+small;
+})();
 const DIVISORS = [1,4,5,6,8,10,11,12,15,16,20,22,24,30,32,33,40,44];
 
 /* ---------- Renderer & scena ---------- */
@@ -359,7 +415,7 @@ function buildTiers(inner,outer,rows,y0,rise,{front=0}={}){
   scene.add(im);
 }
 // tribuna bassa: da dietro il vetro fino sotto il ribbon
-buildTiers([31.8,16.8,6.5],[RIB.hx+0.2,RIB.hz+0.2,RIB.c+0.1],12,1.1,0.38);
+buildTiers(LOW.ring,[RIB.hx+0.2,RIB.hz+0.2,RIB.c+0.1],12,1.1,0.38);
 // tribuna alta: dietro il ribbon
 const UP0=[RIB.hx+1.8,RIB.hz+1.8,RIB.c+0.75], UP1=[RIB.hx+11,RIB.hz+11,RIB.c+4.5];
 buildTiers(UP0,UP1,9,RIB.y0+1.35,0.56,{front:RIB.y0+1.15});
@@ -399,8 +455,9 @@ const roof=new THREE.Group(); scene.add(roof);
 })();
 
 /* ---------- Media ---------- */
-const media = { cube:null, rib:null, ribA:null, ribB:null, ribC:null };
-const fit = { cube:'contain', rib:'contain' };
+const media = { cube:null, rib:null, ribA:null, ribB:null, ribC:null, low:null };
+LOW_PANELS.forEach(p=>media['low'+p.id]=null);
+const fit = { cube:'contain', rib:'contain', low:'contain' };
 
 function drawFit(g, m, dx,dy,dw,dh, mode){
   const sw=m.w, sh=m.h;
@@ -566,11 +623,83 @@ function drawRibbon(onlyTargets){
   });
 }
 
+
+/* ---------- LED sotto ---------- */
+const lowPoly = oct(...LOW.ring);
+const lowState = { mode:'each' };
+const lowPanels = [];
+(function(){
+  const backMat=new THREE.MeshLambertMaterial({color:0x14181F});
+  LOW_PANELS.forEach(def=>{
+    const a0=lowPoly[def.side], b0=lowPoly[(def.side+1)%8];
+    const sideLen=Math.hypot(b0[0]-a0[0],b0[1]-a0[1]);
+    const dx=(b0[0]-a0[0])/sideLen, dz=(b0[1]-a0[1])/sideLen;
+    const len=def.px/LOW.pxPerM, h=LOW.pxH/LOW.pxPerM;
+    const at = def.at==='center' ? (sideLen-len)/2 : def.at==='end' ? sideLen-len : def.at;
+    // normale verso il centro dell'arena
+    let nx=-dz, nz=dx; const mx=a0[0]+dx*(at+len/2), mz=a0[1]+dz*(at+len/2);
+    if(nx*mx+nz*mz>0){ nx=-nx; nz=-nz; }
+    const a=[a0[0]+dx*at+nx*0.03, a0[1]+dz*at+nz*0.03], b=[a[0]+dx*len, a[1]+dz*len];
+    const y0=LOW.y0, y1=LOW.y0+h;
+    const P=[a[0],y0,a[1], b[0],y0,b[1], b[0],y1,b[1], a[0],y0,a[1], b[0],y1,b[1], a[0],y1,a[1]];
+    const U=[0,0,1,0,1,1, 0,0,1,1,0,1];
+    const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(P,3)); g.setAttribute('uv',new THREE.Float32BufferAttribute(U,2));
+    const cv=mkCanvas(def.px, LOW.pxH), tex=srgbTex(cv); tex.minFilter=THREE.LinearMipmapLinearFilter;
+    const mat=new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide,toneMapped:false}); ledMats.push(mat);
+    scene.add(new THREE.Mesh(g,mat));
+    // cassone dietro il pannello
+    const bh=y1+0.04-LOW.base;
+    const box=new THREE.Mesh(new THREE.BoxGeometry(len+0.06,bh,0.14),backMat);
+    box.position.set(mx-nx*0.06, LOW.base+bh/2, mz-nz*0.06); box.rotation.y=-Math.atan2(dz,dx);
+    scene.add(box);
+    lowPanels.push({...def, len, cv, g:cv.getContext('2d'), tex, map:{a:[a0[0]+dx*at,a0[1]+dz*at], b:[a0[0]+dx*(at+len),a0[1]+dz*(at+len)], n:[nx,nz]}});
+  });
+})();
+function lowMediaFor(p){ return lowState.mode==='tile' ? media.low : media['low'+p.id]; }
+function isPlaying(m){ return !!(m&&m.kind==='video'&&!m.el.paused); }
+function drawLow(onlyVideo){
+  lowPanels.forEach(p=>{
+    const m=lowMediaFor(p), g=p.g, w=p.cv.width, h=p.cv.height;
+    if(onlyVideo && !isPlaying(m)) return;
+    if(lowState.mode==='tile'){
+      if(!m){ placeholder(g,0,0,w,h,`${p.id}: grafica ripetuta`); }
+      else {
+        g.fillStyle='#000'; g.fillRect(0,0,w,h);
+        const tw=Math.max(4, m.w*h/m.h);
+        for(let x=0;x<w;x+=tw) g.drawImage(m.el,0,0,m.w,m.h,Math.round(x),0,Math.ceil(tw),h);
+      }
+    } else {
+      if(m) drawFit(g,m,0,0,w,h,fit.low); else placeholder(g,0,0,w,h,`${p.id}: ${p.px} × ${LOW.pxH} px`);
+    }
+    p.tex.needsUpdate=true;
+  });
+}
+function lowVideoPlaying(){ return lowPanels.some(p=>isPlaying(lowMediaFor(p))); }
+const mapLow=document.getElementById('mapLow');
+function drawMapLow(){
+  const S=3.6, cx=160, cy=105, X=x=>cx-x*S, Y=z=>cy-z*S;
+  const css=getComputedStyle(document.documentElement), v=k=>css.getPropertyValue(k).trim();
+  const ink=v('--muted'), on=v('--yellow'), done=v('--ok'), off=v('--blue');
+  let s=`<rect x="${cx-30*S*0.98}" y="${cy-15*S*0.98}" width="${60*S*0.98}" height="${30*S*0.98}" rx="${8.5*S}" fill="none" stroke="${ink}" stroke-opacity=".45" stroke-width="1.2"/>`;
+  s+=`<rect x="${cx-3*S}" y="${cy-3*S}" width="${6*S}" height="${6*S}" fill="${ink}" fill-opacity=".35"/>`;
+  s+=`<polygon points="${ribPoly.map(([x,z])=>X(x)+','+Y(z)).join(' ')}" fill="none" stroke="${off}" stroke-opacity=".4" stroke-width="3"/>`;
+  s+=`<polygon points="${lowPoly.map(([x,z])=>X(x)+','+Y(z)).join(' ')}" fill="none" stroke="${ink}" stroke-opacity=".35" stroke-width="1" stroke-dasharray="3 3"/>`;
+  lowPanels.forEach(p=>{
+    const has = lowState.mode==='tile' ? !!media.low : !!media['low'+p.id];
+    const A=[X(p.map.a[0]),Y(p.map.a[1])], B=[X(p.map.b[0]),Y(p.map.b[1])];
+    s+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="${has?done:on}" stroke-width="7" stroke-linecap="butt"/>`;
+    const k=S*(p.side===5?5.6:3.4), mx=(A[0]+B[0])/2-p.map.n[0]*k, my=(A[1]+B[1])/2-p.map.n[1]*k;
+    s+=`<text x="${mx}" y="${my+4}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="600" font-size="12" fill="${v('--ink')}">${p.id}</text>`;
+  });
+  s+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="Barlow, sans-serif" font-size="9" fill="${ink}">cubo</text>`;
+  mapLow.innerHTML=s;
+}
+
 /* ---------- Pianta SVG ---------- */
 const map=document.getElementById('map');
 function drawMap(){
   const t=ribTarget(), S=3.6, cx=160, cy=105;
-  const P=ribPoly.map(([x,z])=>[cx+x*S, cy-z*S]);
+  const P=ribPoly.map(([x,z])=>[cx-x*S, cy-z*S]);
   const css=getComputedStyle(document.documentElement);
   const on=css.getPropertyValue('--yellow').trim(), off=css.getPropertyValue('--blue').trim(), ink=css.getPropertyValue('--muted').trim();
   let s=`<rect x="${cx-30*S*0.98}" y="${cy-15*S*0.98}" width="${60*S*0.98}" height="${30*S*0.98}" rx="${8.5*S}" fill="none" stroke="${ink}" stroke-opacity=".45" stroke-width="1.2"/>`;
@@ -583,7 +712,7 @@ function drawMap(){
     s+=`<text x="${mx+dx/d*13}" y="${my+dy/d*13+4}" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="600" font-size="13" fill="${ink}">${type}</text>`;
   }
   s+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="Barlow, sans-serif" font-size="9" fill="${ink}">cubo</text>`;
-  if(ribState.mode==='ring'){ const p0=P[0]; s+=`<circle cx="${p0[0]}" cy="${p0[1]}" r="5" fill="${css.getPropertyValue('--ink').trim()}"/><text x="${p0[0]-9}" y="${p0[1]+4}" text-anchor="end" font-family="Barlow, sans-serif" font-weight="600" font-size="11" fill="${css.getPropertyValue('--ink').trim()}">inizio ↑</text>`; }
+  if(ribState.mode==='ring'){ const p0=P[0]; s+=`<circle cx="${p0[0]}" cy="${p0[1]}" r="5" fill="${css.getPropertyValue('--ink').trim()}"/><text x="${p0[0]+9}" y="${p0[1]+4}" text-anchor="start" font-family="Barlow, sans-serif" font-weight="600" font-size="11" fill="${css.getPropertyValue('--ink').trim()}">inizio ↑</text>`; }
   map.innerHTML=s;
 }
 
@@ -731,7 +860,7 @@ function videoErrorText(c){
 }
 function withDur(m,res,allowed){
   if(!m||m.kind!=='video'||!isFinite(m.dur)) return res;
-  let [c,t]=res; const ok=allowed.some(a=>Math.abs(m.dur-a)<=0.5);
+  let [c,t]=res; const ok=!allowed.length||allowed.some(a=>Math.abs(m.dur-a)<=0.5);
   const ds=m.dur.toFixed(1).replace('.',','), cn=m.codec?` ${m.codec.name}`:'';
   t+=` Video${cn} da ${ds} s`+(ok?'.':`: l'offerta prevede ${allowed.join(' o ')} secondi.`);
   if(!ok&&c==='ok') c='warn';
@@ -739,7 +868,47 @@ function withDur(m,res,allowed){
 }
 function disposeMedia(m){ if(!m) return; if(m.kind==='video'){ m.el.pause(); if(m.el.src.startsWith('blob:')) URL.revokeObjectURL(m.el.src); m.el.removeAttribute('src'); } else if(m.el.close) m.el.close(); }
 function escapeHtml(s){ return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+(function(){
+  const box=document.getElementById('eachLow');
+  box.innerHTML=lowPanels.map(p=>`
+    <div class="slot">
+      <div class="slot-head"><b>${p.id}</b><span>${p.px} × ${LOW.pxH} px, circa ${String(p.len).replace('.',',')} m</span></div>
+      <div class="drop small" id="dropLow${p.id}" tabindex="0" role="button" aria-label="Carica grafica per il pannello ${p.id}"><strong>Carica file ${p.id}</strong><span>PNG, JPG, MP4 o MOV</span></div>
+      <input type="file" id="fileLow${p.id}" accept="image/png,image/jpeg,video/mp4,video/quicktime,.png,.jpg,.jpeg,.mp4,.m4v,.mov,.qt" hidden>
+      <div class="file" id="infoLow${p.id}"><span class="name" id="nameLow${p.id}"></span><button class="btn" id="clearLow${p.id}">Rimuovi</button></div>
+      <div class="status" id="statusLow${p.id}" role="status"></div>
+    </div>`).join('');
+})();
+function refreshLowStatus(){
+  const tile=lowState.mode==='tile';
+  document.getElementById('tileLow').hidden=!tile;
+  document.getElementById('eachLow').hidden=tile;
+  document.getElementById('fitLowRow').style.display=tile?'none':'';
+  document.getElementById('needLow').textContent = tile ? `qualsiasi × ${LOW.pxH} px` : `7 file alti ${LOW.pxH} px`;
+  document.getElementById('needLowNote').textContent = tile
+    ? 'La grafica viene ripetuta da sinistra su ogni pannello e tagliata dove il pannello finisce. Una larghezza multipla di 72 px segue i moduli.'
+    : 'Ogni pannello ha la sua misura. Quelli senza file restano segnati in giallo sulla pianta, quelli caricati in verde.';
+  if(tile){
+    const m=media.low;
+    if(!m){ document.getElementById('statusLow').className='status'; return; }
+    const w=Math.round(m.w*LOW.pxH/m.h);
+    let res = m.h===LOW.pxH ? ['ok',`Altezza corretta: ${m.w} × ${m.h} px.`]
+      : m.h<LOW.pxH ? ['warn',`Il file è alto ${m.h} px invece di ${LOW.pxH}: viene ingrandito a ${w} × ${LOW.pxH} px e sul LED può risultare sfocato.`]
+      : ['ok',`Il file è ${m.w} × ${m.h} px, viene ridimensionato a ${w} × ${LOW.pxH} px.`];
+    if(w>792) res[1]+=' È più largo del pannello più corto (E1, 792 px): lì si vede solo la parte sinistra.';
+    res=withDur(m,res,[]); setStatus('statusLow',res[0],res[1]);
+    return;
+  }
+  lowPanels.forEach(p=>{
+    const m=media['low'+p.id], id='statusLow'+p.id;
+    if(!m){ document.getElementById(id).className='status'; return; }
+    const [c,t]=withDur(m,checkFormat(m,p.px,LOW.pxH,[],fit.low),[]); setStatus(id,c,t);
+  });
+}
+
 wireDrop('cube','Cube'); wireDrop('rib','Rib'); wireDrop('ribA','RibA'); wireDrop('ribB','RibB'); wireDrop('ribC','RibC');
+wireDrop('low','Low'); lowPanels.forEach(p=>wireDrop('low'+p.id,'Low'+p.id));
 
 /* ---------- Controlli ---------- */
 document.querySelectorAll('.seg').forEach(seg=>{
@@ -753,11 +922,18 @@ const repSel=document.getElementById('ribRep');
 DIVISORS.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent= n===1 ? `1 volta, grafica unica su tutti i 220 cabinet (21120 × 96 px)` : `${n} volte, ${220/n%1===0?220/n:(220/n).toFixed(2).replace('.',',')} cabinet ciascuna (${RIB.totalPx/n} × 96 px)`; repSel.appendChild(o); });
 repSel.value=String(ribState.rep);
 repSel.addEventListener('change',()=>{ ribState.rep=+repSel.value; redrawAll(); });
-function activeMedia(){ return ribState.mode==='abc' ? [media.cube,media.ribA,media.ribB,media.ribC] : [media.cube,media.rib]; }
+function activeLowMedia(){ return lowState.mode==='tile' ? [media.low] : lowPanels.map(p=>media['low'+p.id]); }
+function activeMedia(){ return (ribState.mode==='abc' ? [media.cube,media.ribA,media.ribB,media.ribC] : [media.cube,media.rib]).concat(activeLowMedia()); }
 document.getElementById('ribMode').addEventListener('change',e=>{
   ribState.mode=e.target.value;
   const act=activeMedia();
   [media.rib,media.ribA,media.ribB,media.ribC].forEach(m=>{ if(m&&m.kind==='video'){ if(act.includes(m)){ m.el.currentTime=0; m.el.play().catch(()=>{}); } else m.el.pause(); } });
+  redrawAll(); updateVidUI();
+});
+document.getElementById('lowMode').addEventListener('change',e=>{
+  lowState.mode=e.target.value;
+  const act=activeLowMedia();
+  [media.low,...lowPanels.map(p=>media['low'+p.id])].forEach(m=>{ if(m&&m.kind==='video'){ if(act.includes(m)){ m.el.currentTime=0; m.el.play().catch(()=>{}); } else m.el.pause(); } });
   redrawAll(); updateVidUI();
 });
 document.getElementById('clubBg').addEventListener('change',e=>{ ribState.clubBg=e.target.checked; redrawAll(); });
@@ -779,7 +955,7 @@ ppBtn.addEventListener('click',()=>{
 });
 document.getElementById('restart').addEventListener('click',()=>{ videos().forEach(v=>{ v.el.currentTime=0; v.el.play().catch(()=>{}); }); updateVidUI(); });
 
-function redrawAll(){ drawCube(); drawRibbon(false); drawMap(); refreshCubeStatus(); refreshRibStatus(); }
+function redrawAll(){ drawCube(); drawRibbon(false); drawLow(false); drawMap(); drawMapLow(); refreshCubeStatus(); refreshRibStatus(); refreshLowStatus(); }
 
 /* ---------- Punti di vista ---------- */
 const VIEWS = [
@@ -788,6 +964,7 @@ const VIEWS = [
   {id:'alta', label:'Tribuna alta', pos:[4,13,32.6], tgt:[0,8,-6]},
   {id:'porta', label:'Dietro la porta', pos:[34,3.9,1.5], tgt:[-10,8.4,0]},
   {id:'cubo', label:'Primo piano cubo', pos:[9,10.5,10], tgt:[0,13.6,0]},
+  {id:'sotto', label:'LED sotto', pos:[16,11,21], tgt:[-8,2,-13]},
   {id:'lato', label:'Lato lungo A', pos:[0,3.9,-19.6], tgt:[0,6.9,24]},
   {id:'pano', label:'Panoramica', pos:[-70,48,62], tgt:[0,4,0]},
 ];
@@ -869,6 +1046,7 @@ function tick(now){
     lastVid=now;
     if(media.cube&&media.cube.kind==='video'&&!media.cube.el.paused) drawCube();
     if(ribVideoPlaying()) drawRibbon(true);
+    if(lowVideoPlaying()) drawLow(true);
   }
   controls.update();
   roof.visible = camera.position.y < 18;
@@ -879,7 +1057,7 @@ redrawAll();
 goTo(VIEWS[0],true);
 requestAnimationFrame(tick);
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(redrawAll);
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',drawMap);
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{ drawMap(); drawMapLow(); });
 })();
 </script>
 </body>
