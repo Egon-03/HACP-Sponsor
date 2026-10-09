@@ -28,7 +28,7 @@ jobs:
       - name: Prepara i file del sito
         run: |
           mkdir _site
-          cp index.html anteprima-light.html anteprima-convertitore.html _site/
+          cp index.html anteprima-light.html anteprima-convertitore.html favicon.ico logo.png _site/
 
       - uses: actions/configure-pages@v5
 
