@@ -1,277 +1,415 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Anteprima sponsor LED · Grassi Swiss</title>
+<meta name="description" content="Guarda come appare la grafica dello sponsor sul cubo, sul ribbon e sui LED sotto della Gottardo Arena di Ambrì.">
+<meta name="theme-color" content="#030714">
 <link rel="icon" href="favicon.ico">
-<meta name="description" content="Guarda come appare la grafica dello sponsor sul cubo e sul ribbon LED della Gottardo Arena di Ambrì.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Doto:wght@800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#EDF1F6; --panel:#FFFFFF; --ink:#0E1B33; --muted:#55627A; --line:#D5DCE6;
-  --blue:#1F4E9E; --blue-soft:#DCE6F6; --yellow:#E2AE1C; --yellow-soft:#FBF0CF;
-  --night:#060B14; --night-2:#0E1B33; --night-ink:#E9EFF8; --night-muted:#97A5BC;
-  --shadow:0 1px 2px rgba(14,27,51,.06),0 8px 24px rgba(14,27,51,.08);
+  --pit:#030714; --night:#07102A; --panel:#0B1638; --panel-2:#101E4A;
+  --led:#1F57E6; --led-hi:#5B8CFF; --gold:#F5B800;
+  --text:#E8EDF8; --muted:#93A1C4; --hair:rgba(255,255,255,.09);
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --dot:"Doto",ui-monospace,"Courier New",monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  background:var(--pit);
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0B1322; --panel:#111C2F; --ink:#E5ECF6; --muted:#97A5BC; --line:#25344D;
-    --blue:#7BA4EE; --blue-soft:#1A2A47; --yellow:#F0C143; --yellow-soft:#3A3014;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0B1322; --panel:#111C2F; --ink:#E5ECF6; --muted:#97A5BC; --line:#25344D;
-  --blue:#7BA4EE; --blue-soft:#1A2A47; --yellow:#F0C143; --yellow-soft:#3A3014;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
-}
-*,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Barlow,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;font-family:var(--body);font-size:17px;line-height:1.55;color:var(--text);background:var(--pit);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit}
-.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-.cond{font-family:"Barlow Condensed",Barlow,sans-serif}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+.dots{background-image:radial-gradient(circle,rgba(255,255,255,.07) .8px,transparent 1.3px);background-size:5px 5px}
 
-/* ---------- Hero ---------- */
-.hero{position:relative;background:var(--night);color:var(--night-ink);overflow:hidden;isolation:isolate}
-.hero::before{content:"";position:absolute;inset:0;z-index:-1;
-  background:
-    radial-gradient(900px 420px at 85% 10%,rgba(31,78,158,.55),transparent 60%),
-    radial-gradient(600px 300px at 10% 100%,rgba(226,174,28,.18),transparent 60%);
-}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.35;
-  background-image:radial-gradient(rgba(255,255,255,.18) 1px,transparent 1px);background-size:14px 14px;
-  -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 85%);mask-image:linear-gradient(180deg,#000 0%,transparent 85%);
-}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
-.brand{display:flex;align-items:center;gap:10px;font:700 18px/1 "Barlow Condensed",sans-serif;letter-spacing:.08em;text-transform:uppercase}
-.brand-logo{width:42px;height:42px;display:block}
-.topbar nav a{font:600 15px/1 "Barlow Condensed",sans-serif;letter-spacing:.04em;color:var(--night-muted);text-decoration:none;padding:8px 10px;border-radius:6px}
-.topbar nav a:hover{color:#fff;background:rgba(255,255,255,.06)}
+/* ================= HERO ================= */
+.hero{position:relative;min-height:max(780px,100svh);display:flex;flex-direction:column;overflow:hidden;
+  background:radial-gradient(ellipse 70% 55% at 50% 34%,#12286E 0%,#07102A 52%,#030714 100%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(to top,#030714 12%,rgba(3,7,20,.85) 30%,transparent 58%)}
 
-.hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:40px;align-items:center;padding:48px 0 72px}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font:600 14px/1 "Barlow Condensed",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#F0C143}
-.eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:#F0C143;box-shadow:0 0 10px #F0C143}
-.hero h1{font:800 clamp(44px,7vw,84px)/.92 "Barlow Condensed",sans-serif;margin:16px 0 18px;letter-spacing:-.005em;text-transform:uppercase}
-.hero h1 em{font-style:normal;color:#F0C143}
-.hero p.lead{font-size:18px;color:#C3CEDF;max-width:46ch;margin:0 0 28px}
-.cta{display:flex;flex-wrap:wrap;gap:12px}
-.btn{display:inline-flex;align-items:center;gap:10px;font:700 17px/1 "Barlow Condensed",sans-serif;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;padding:14px 20px;border-radius:8px;transition:transform .15s,background .15s,border-color .15s}
-.btn:hover{transform:translateY(-1px)}
-.btn-primary{background:#E2AE1C;color:#0E1B33}
-.btn-primary:hover{background:#F0C143}
-.btn-ghost{border:1px solid rgba(255,255,255,.25);color:#fff}
-.btn-ghost:hover{border-color:#6E9BEA;background:rgba(31,78,158,.35)}
-.btn:focus-visible,.card:focus-visible,.topbar a:focus-visible{outline:2px solid #F0C143;outline-offset:3px}
+.top{position:relative;z-index:3;width:100%;display:flex;align-items:center;justify-content:space-between;padding-block:24px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand img{width:36px;height:36px;display:block}
+.brand span{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:.02em}
+.top nav{display:flex;gap:32px}
+.top nav a{color:#B9C5E2;text-decoration:none;font-weight:500;font-size:15px}
+.top nav a:hover{color:#fff}
 
-/* LED cube illustration */
-.visual{position:relative;display:grid;place-items:center;min-height:320px}
-.cube{width:min(300px,70vw);height:auto;filter:drop-shadow(0 30px 50px rgba(31,78,158,.45))}
-.cube .face-text{font:800 24px/1 "Barlow Condensed",sans-serif;letter-spacing:.06em;fill:#fff}
-.cube .pulse{animation:pulse 3.2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.85}50%{opacity:1}}
+/* Light beams + crowd */
+.beam{position:absolute;top:-10%;width:46vw;height:120%;pointer-events:none;mix-blend-mode:screen;transform-origin:50% 0;
+  background:linear-gradient(to bottom,rgba(160,195,255,.20),rgba(160,195,255,.05) 55%,transparent 80%);
+  clip-path:polygon(46% 0,54% 0,100% 100%,0 100%);animation:sway 14s ease-in-out infinite alternate}
+.beam.b1{left:-8vw;--a:-22deg;--b:-10deg}
+.beam.b2{right:-8vw;--a:20deg;--b:8deg;animation-delay:-6s}
+@keyframes sway{from{transform:rotate(var(--a))}to{transform:rotate(var(--b))}}
+.crowd{position:absolute;inset:0;pointer-events:none}
+.crowd i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 6px 2px rgba(255,255,255,.7);
+  opacity:0;animation:flash var(--d) ease-out infinite;animation-delay:var(--delay)}
+@keyframes flash{0%,100%{opacity:0}3%{opacity:1}9%{opacity:0}}
 
-/* Ribbon */
-.ribbon{position:relative;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);background:#03070E;overflow:hidden;height:56px;display:flex;align-items:center}
-.ribbon::before,.ribbon::after{content:"";position:absolute;top:0;bottom:0;width:80px;z-index:1}
-.ribbon::before{left:0;background:linear-gradient(90deg,#03070E,transparent)}
-.ribbon::after{right:0;background:linear-gradient(270deg,#03070E,transparent)}
-.ribbon-track{display:flex;gap:48px;white-space:nowrap;animation:scroll 32s linear infinite;padding-left:48px;
-  background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1.2px);background-size:5px 5px}
-.ribbon-track span{font:800 26px/1 "Barlow Condensed",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#E9EFF8;text-shadow:0 0 12px rgba(110,155,234,.7)}
-.ribbon-track span.y{color:#F0C143;text-shadow:0 0 12px rgba(240,193,67,.6)}
+/* 3D scene */
+.scene{position:absolute;inset:0;perspective:1400px;perspective-origin:50% 30%;pointer-events:none}
+.world{--s:.86;--tx:-9deg;--ty:0deg;position:absolute;left:50%;top:33%;width:0;height:0;transform-style:preserve-3d;
+  transform:scale(var(--s)) rotateX(var(--tx)) rotateY(var(--ty))}
+.world *{transform-style:preserve-3d}
+.halo{position:absolute;left:-420px;top:-300px;width:840px;height:600px;border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(60,120,255,.45),rgba(60,120,255,.12) 45%,transparent 70%);transform:translateZ(-700px) scale(1.6)}
+
+/* Cube */
+.cube{position:absolute;animation:spin 36s linear infinite}
+@keyframes spin{to{transform:rotateY(-360deg)}}
+.face{position:absolute;left:-150px;top:-95px;width:300px;height:190px;display:grid;place-items:center;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background-color:#123AA8;background-image:radial-gradient(circle,rgba(255,255,255,.2) .9px,transparent 1.4px);background-size:5px 5px;
+  border-top:8px solid #04081A;border-bottom:14px solid #04081A;box-shadow:inset 0 0 40px rgba(0,0,0,.35)}
+.face::before{content:"";position:absolute;inset:-40% -70%;
+  background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.32) 50%,transparent 58%);
+  animation:sweep 6s ease-in-out infinite;animation-delay:var(--sd,0s)}
+@keyframes sweep{0%{transform:translateX(-55%)}55%,100%{transform:translateX(55%)}}
+.face span{position:relative;font-family:var(--dot);font-weight:900;font-size:44px;line-height:.95;text-align:center;text-transform:uppercase;
+  color:#fff;text-shadow:0 0 8px rgba(255,255,255,.8),0 0 24px rgba(120,170,255,.8)}
+.face.gold{background-color:#E8A900;background-image:radial-gradient(circle,rgba(0,0,0,.22) .9px,transparent 1.4px)}
+.face.gold span{color:#07102A;text-shadow:0 0 1px rgba(7,16,42,.5)}
+.f1{transform:rotateY(0deg) translateZ(150px)}
+.f2{transform:rotateY(90deg) translateZ(150px);--sd:-1.5s}
+.f3{transform:rotateY(180deg) translateZ(150px);--sd:-3s}
+.f4{transform:rotateY(270deg) translateZ(150px);--sd:-4.5s}
+.cap{position:absolute;left:-150px;top:-150px;width:300px;height:300px;background:#060C22;border:2px solid #1A2A5C}
+.cap.t{transform:rotateX(90deg) translateZ(95px)}
+.cap.b{transform:rotateX(-90deg) translateZ(95px);background:#04081A}
+.cable{position:absolute;left:-1px;top:-795px;width:2px;height:700px;background:linear-gradient(transparent,#3D5291)}
+
+/* Ribbon ring */
+.ring-pos{position:absolute;transform:translateY(210px)}
+.ring{animation:ring 120s linear infinite}
+@keyframes ring{to{transform:rotateY(360deg)}}
+.seg{position:absolute;left:-41px;top:-22px;width:82px;height:44px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:rotateY(calc(var(--i) * -7.5deg)) translateZ(-620px);
+  background:#040A1E;background-image:radial-gradient(circle,rgba(255,255,255,.08) .7px,transparent 1.1px);background-size:4px 4px;
+  border-block:3px solid #0F1C44}
+.strip{position:absolute;top:0;height:100%;width:3896px;left:calc(var(--i) * -81.17px);display:flex;align-items:center;justify-content:space-around}
+.strip b{font-family:var(--dot);font-weight:900;font-size:26px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;
+  color:#fff;text-shadow:0 0 6px rgba(255,255,255,.7)}
+.strip b.g{color:var(--gold);text-shadow:0 0 8px rgba(245,184,0,.8)}
+
+/* Ice */
+.ice{position:absolute;left:-620px;top:-290px;width:1240px;height:580px;border-radius:170px;overflow:hidden;
+  transform:translateY(560px) rotateX(90deg);
+  background:radial-gradient(ellipse 45% 50% at 50% 50%,#6E8FD6 0%,#2E4A8C 45%,#14234F 100%);
+  box-shadow:0 0 0 10px #0A1433}
+.ice svg{position:absolute;inset:0;width:100%;height:100%}
+.ice::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 22% 26% at 50% 50%,rgba(150,190,255,.55),transparent 70%)}
+
+/* Hero copy */
+.hero-copy{position:relative;z-index:2;width:100%;margin-top:auto;padding-bottom:64px;display:grid;
+  grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:56px;align-items:end}
+.where{margin:0 0 14px;color:var(--gold);font-weight:600;font-size:16px}
+h1{margin:0;font-family:var(--display);font-weight:900;text-transform:uppercase;
+  font-size:clamp(54px,7.6vw,132px);line-height:.84;letter-spacing:-.008em;text-shadow:0 6px 40px rgba(0,0,0,.6)}
+.lede{margin:0 0 28px;font-size:19px;color:#C4CEE6;max-width:36ch}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 26px;border-radius:6px;
+  font-weight:600;font-size:16px;text-decoration:none;transition:background-color .15s,border-color .15s,box-shadow .15s}
+.btn-gold{background:var(--gold);color:#07102A;box-shadow:0 0 0 0 rgba(245,184,0,.0)}
+.btn-gold:hover{background:#FFC929;box-shadow:0 0 28px rgba(245,184,0,.45)}
+.btn-ghost{border:1.5px solid rgba(255,255,255,.35);color:#fff}
+.btn-ghost:hover{border-color:#fff}
+.private{display:flex;align-items:center;gap:8px;margin:22px 0 0;font-size:15px;color:#8F9CBE}
+.private svg{flex:none}
+
+/* Flat ticker */
+.ticker{position:relative;overflow:hidden;height:84px;display:flex;align-items:center;background:#02050F;
+  border-block:1px solid #172650;
+  background-image:radial-gradient(circle,rgba(255,255,255,.05) .8px,transparent 1.2px);background-size:4px 4px}
+.track{display:flex;width:max-content;animation:scroll 48s linear infinite}
+.group{display:flex;align-items:center;flex:none}
+.item{padding:0 34px;font-family:var(--dot);font-weight:900;font-size:40px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;
+  color:#fff;text-shadow:0 0 7px rgba(255,255,255,.55)}
+.item.g{color:var(--gold);text-shadow:0 0 9px rgba(245,184,0,.75)}
+.pip{width:10px;height:10px;border-radius:50%;background:var(--led-hi);box-shadow:0 0 12px var(--led-hi);flex:none}
 @keyframes scroll{to{transform:translateX(-50%)}}
 
-/* ---------- Sections ---------- */
-section{padding:72px 0}
-.section-head{max-width:640px;margin-bottom:32px}
-.section-head .kicker{font:600 14px/1 "Barlow Condensed",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
-.section-head h2{font:800 clamp(32px,4.4vw,46px)/1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin:10px 0 12px}
-.section-head p{color:var(--muted);margin:0;font-size:17px}
+/* ================= SECTIONS ================= */
+section{padding:120px 0}
+.sec-a{background:var(--night)}
+.sec-b{background:var(--pit)}
+h2{margin:0 0 18px;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(46px,6.6vw,96px);line-height:.88}
+.intro{margin:0 0 56px;max-width:58ch;color:var(--muted);font-size:18px}
 
-.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.card{position:relative;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px;text-decoration:none;color:inherit;box-shadow:var(--shadow);transition:transform .18s,border-color .18s}
-.card:hover{transform:translateY(-3px);border-color:var(--blue)}
-.card.featured{border-color:var(--yellow)}
-.card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-.tag{font:700 13px/1 "Barlow Condensed",sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:7px 10px;border-radius:5px}
-.tag.light{background:var(--blue-soft);color:var(--blue)}
-.tag.full{background:var(--yellow-soft);color:var(--ink)}
-.size{font:700 15px/1 "Barlow Condensed",sans-serif;letter-spacing:.04em;color:var(--muted)}
-.card h3{font:800 34px/1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin:0 0 10px}
-.card > p{color:var(--muted);margin:0 0 20px}
-.feat{list-style:none;padding:0;margin:0 0 24px;display:grid;gap:10px}
-.feat li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
-.feat svg{flex:none;margin-top:3px;color:var(--blue)}
-.card.featured .feat svg{color:var(--yellow)}
-.formats{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 24px}
-.formats span{font:600 13px/1 "Barlow Condensed",sans-serif;letter-spacing:.06em;padding:6px 8px;border:1px solid var(--line);border-radius:4px;color:var(--muted)}
-.card .go{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid var(--line);font:700 18px/1 "Barlow Condensed",sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--blue)}
-.card.featured .go{color:var(--ink)}
-.card .go svg{transition:transform .18s}
-.card:hover .go svg{transform:translateX(4px)}
+/* Versions */
+.versions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.ver{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
+.ver.full{border-color:rgba(245,184,0,.4);box-shadow:0 0 60px rgba(245,184,0,.08)}
+.screen{position:relative;height:150px;display:flex;align-items:center;justify-content:center;background-color:#02050F;border-bottom:1px solid var(--hair);overflow:hidden}
+.screen span{font-family:var(--dot);font-weight:900;font-size:clamp(52px,6vw,82px);line-height:1;letter-spacing:.02em;white-space:nowrap}
+.light .screen span{color:var(--led-hi);text-shadow:0 0 10px rgba(91,140,255,.9),0 0 34px rgba(91,140,255,.5)}
+.full .screen span{color:var(--gold);text-shadow:0 0 10px rgba(245,184,0,.9),0 0 34px rgba(245,184,0,.45)}
+.screen small{position:absolute;right:16px;bottom:10px;font-size:13px;color:var(--muted)}
+.ver-body{display:flex;flex-direction:column;flex:1;padding:36px 40px 40px}
+.ver h3{margin:0;font-family:var(--display);font-weight:900;font-size:46px;line-height:.95;text-transform:uppercase}
+.ver-body > p{margin:14px 0 24px;color:var(--muted);max-width:42ch}
+.pros{list-style:none;margin:0 0 30px;padding:0;display:grid;gap:10px}
+.pros li{display:flex;gap:12px;align-items:flex-start}
+.pros svg{flex:none;margin-top:4px;color:var(--led-hi)}
+.full .pros svg{color:var(--gold)}
+.formats{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 36px;padding:0;list-style:none}
+.formats li{padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;background:rgba(255,255,255,.07);color:#D4DCEE}
+.formats li.x{background:rgba(245,184,0,.16);color:#FFD866}
+.ver .btn{margin-top:auto;align-self:flex-start}
+.btn-blue{background:var(--led);color:#fff}
+.btn-blue:hover{background:#3268F0;box-shadow:0 0 28px rgba(31,87,230,.5)}
+.which{margin:28px 0 0;color:var(--muted)}
+.which strong{color:var(--text)}
 
 /* Steps */
-.alt{background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;counter-reset:s}
-.step{counter-increment:s}
-.step::before{content:"0" counter(s);display:block;font:800 52px/1 "Barlow Condensed",sans-serif;color:var(--yellow);margin-bottom:10px}
-.step h4{font:700 22px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin:0 0 6px}
-.step p{margin:0;color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px}
+.steps li{padding-top:26px;border-top:2px solid rgba(255,255,255,.18)}
+.num{display:block;font-family:var(--dot);font-weight:900;font-size:120px;line-height:.8;margin-bottom:22px;
+  color:var(--gold);text-shadow:0 0 12px rgba(245,184,0,.75),0 0 40px rgba(245,184,0,.35)}
+.steps h3{margin:0 0 10px;font-family:var(--display);font-weight:800;font-size:32px;line-height:1;text-transform:uppercase}
+.steps p{margin:0;color:var(--muted);max-width:34ch}
 
-/* Specs */
-.specs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.spec{background:var(--panel);padding:24px}
-.spec b{display:block;font:800 40px/1 "Barlow Condensed",sans-serif;color:var(--blue)}
-.spec span{display:block;margin-top:6px;color:var(--muted);font-size:14px}
+/* Scoreboard */
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;background:#1B2A55;border:3px solid #1B2A55;border-radius:16px;overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04)}
+.cell{background-color:#02050F;background-image:radial-gradient(circle,rgba(255,255,255,.06) .8px,transparent 1.2px);background-size:5px 5px;
+  padding:40px 28px 30px;display:flex;flex-direction:column;gap:18px}
+.val{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-family:var(--dot);font-weight:900;line-height:.9;color:var(--gold);
+  text-shadow:0 0 10px rgba(245,184,0,.85),0 0 36px rgba(245,184,0,.4)}
+.val b{font-size:clamp(56px,6.4vw,104px);font-weight:900;white-space:nowrap}
+.val i{font-style:normal;font-size:clamp(22px,2vw,30px)}
+.cell:nth-child(2n) .val{color:var(--led-hi);text-shadow:0 0 10px rgba(91,140,255,.9),0 0 36px rgba(91,140,255,.45)}
+.zone{margin:0;font-family:var(--display);font-weight:800;font-size:26px;line-height:1;text-transform:uppercase;color:var(--text)}
+.spec{list-style:none;margin:0;padding:16px 0 0;border-top:1px solid var(--hair);display:grid;gap:8px;font-size:15px;color:var(--muted)}
+.note{margin:24px 0 0;font-size:15px;color:var(--muted)}
 
-footer{padding:36px 0 48px;color:var(--muted);font-size:14px}
-footer .wrap{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
-footer .privacy{display:flex;align-items:center;gap:8px}
+/* Footer */
+footer{background:var(--pit);border-top:1px solid var(--hair);color:#8F9CBE;font-size:15px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 32px;justify-content:space-between;align-items:center;padding-top:36px;padding-bottom:36px}
+footer .brand span{font-size:19px;color:var(--text)}
+footer p{display:flex;align-items:center;gap:8px;margin:0}
 
-@media (max-width:860px){
-  .hero-grid{grid-template-columns:1fr;padding:24px 0 48px;gap:24px}
-  .visual{min-height:0;order:-1}
-  .cube{width:min(220px,60vw)}
-  .cards,.steps{grid-template-columns:1fr}
-  .specs{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .topbar nav{display:none}
-  section{padding:56px 0}
+/* ================= RESPONSIVE ================= */
+@media (max-width:1100px){ .world{--s:.7} }
+@media (max-width:940px){
+  .hero-copy{grid-template-columns:minmax(0,1fr);gap:28px}
+  .world{--s:.56;top:30%}
+  .board{grid-template-columns:minmax(0,1fr)}
+  .steps{grid-template-columns:minmax(0,1fr);gap:36px}
+}
+@media (max-width:760px){
+  .top nav{display:none}
+  .hero{min-height:max(760px,100svh)}
+  .lede{font-size:17px}
+  .hero-copy{padding-bottom:44px}
+  .world{--s:.46;top:21%}
+  section{padding:84px 0}
+  .versions{grid-template-columns:minmax(0,1fr)}
+  .ver-body{padding:28px 24px 30px}
+  .ver h3{font-size:38px}
+  .ticker{height:66px}
+  .item{font-size:30px;padding:0 24px}
+  .num{font-size:96px}
+  .cell{padding:28px 22px 26px}
 }
 @media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  html{scroll-behavior:auto}
+  .cube,.ring,.track,.beam,.face::before,.crowd i{animation:none}
+  .crowd{display:none}
 }
 </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-<header class="hero">
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand"><img class="brand-logo" src="logo.png" alt="" width="42" height="42">Grassi Swiss</div>
-      <nav aria-label="Sezioni">
-        <a href="#versioni">Versioni</a>
-        <a href="#come-funziona">Come funziona</a>
-        <a href="#impianto">Impianto LED</a>
-      </nav>
-    </div>
+<header class="hero" id="hero">
+  <div class="beam b1" aria-hidden="true"></div>
+  <div class="beam b2" aria-hidden="true"></div>
+  <div class="crowd" id="crowd" aria-hidden="true"></div>
 
-    <div class="hero-grid">
-      <div>
-        <span class="eyebrow">Ambrì · Anteprima sponsor</span>
-        <h1>La tua grafica<br>sui <em>LED</em> dell'arena</h1>
-        <p class="lead">Carica il logo o il video dello sponsor e guardalo in 3D sul cubo centrale e sul ribbon, in scala reale, prima di andare in onda.</p>
-        <div class="cta">
-          <a class="btn btn-primary" href="anteprima-light.html">Apri versione light
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-          <a class="btn btn-ghost" href="#versioni">Confronta le versioni</a>
-        </div>
+  <div class="scene" aria-hidden="true">
+    <div class="world" id="world">
+      <div class="halo"></div>
+
+      <div class="ice">
+        <svg viewBox="0 0 1240 580" preserveAspectRatio="none">
+          <g fill="none" stroke-linecap="round">
+            <rect x="8" y="8" width="1224" height="564" rx="166" stroke="rgba(255,255,255,.35)" stroke-width="4"/>
+            <line x1="86" y1="14" x2="86" y2="566" stroke="rgba(230,70,70,.55)" stroke-width="4"/>
+            <line x1="1154" y1="14" x2="1154" y2="566" stroke="rgba(230,70,70,.55)" stroke-width="4"/>
+            <line x1="430" y1="8" x2="430" y2="572" stroke="rgba(90,150,255,.75)" stroke-width="14"/>
+            <line x1="810" y1="8" x2="810" y2="572" stroke="rgba(90,150,255,.75)" stroke-width="14"/>
+            <line x1="620" y1="8" x2="620" y2="572" stroke="rgba(230,70,70,.7)" stroke-width="10"/>
+            <circle cx="620" cy="290" r="92" stroke="rgba(90,150,255,.75)" stroke-width="4"/>
+            <circle cx="230" cy="160" r="92" stroke="rgba(230,70,70,.5)" stroke-width="4"/>
+            <circle cx="230" cy="420" r="92" stroke="rgba(230,70,70,.5)" stroke-width="4"/>
+            <circle cx="1010" cy="160" r="92" stroke="rgba(230,70,70,.5)" stroke-width="4"/>
+            <circle cx="1010" cy="420" r="92" stroke="rgba(230,70,70,.5)" stroke-width="4"/>
+            <path d="M86 260 A34 34 0 0 1 86 320" stroke="rgba(90,150,255,.6)" stroke-width="4"/>
+            <path d="M1154 260 A34 34 0 0 0 1154 320" stroke="rgba(90,150,255,.6)" stroke-width="4"/>
+          </g>
+          <g fill="rgba(230,70,70,.6)">
+            <circle cx="230" cy="160" r="9"/><circle cx="230" cy="420" r="9"/>
+            <circle cx="1010" cy="160" r="9"/><circle cx="1010" cy="420" r="9"/>
+            <circle cx="500" cy="160" r="7"/><circle cx="500" cy="420" r="7"/>
+            <circle cx="740" cy="160" r="7"/><circle cx="740" cy="420" r="7"/>
+          </g>
+          <circle cx="620" cy="290" r="8" fill="rgba(90,150,255,.9)"/>
+        </svg>
       </div>
 
-      <div class="visual" aria-hidden="true">
-        <svg class="cube" viewBox="0 0 300 330">
-          <defs>
-            <linearGradient id="fL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2A63C4"/><stop offset="1" stop-color="#132F63"/></linearGradient>
-            <linearGradient id="fR" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F4E9E"/><stop offset="1" stop-color="#0B1E40"/></linearGradient>
-            <pattern id="px" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r=".9" fill="rgba(255,255,255,.14)"/></pattern>
-          </defs>
-          <!-- cables -->
-          <path d="M60 0V60M240 0V60M150 0V40" stroke="#25344D" stroke-width="2"/>
-          <!-- top -->
-          <polygon points="150,40 260,80 150,120 40,80" fill="#0E1B33" stroke="#25344D"/>
-          <!-- left face -->
-          <g class="pulse">
-            <polygon points="40,80 150,120 150,260 40,220" fill="url(#fL)"/>
-            <polygon points="40,80 150,120 150,260 40,220" fill="url(#px)"/>
-            <text class="face-text" transform="matrix(1,.364,0,1,52,172)">SPONSOR</text>
-            <rect transform="matrix(1,.364,0,1,52,186)" width="86" height="6" fill="#F0C143"/>
-          </g>
-          <!-- right face -->
-          <polygon points="150,120 260,80 260,220 150,260" fill="url(#fR)"/>
-          <polygon points="150,120 260,80 260,220 150,260" fill="url(#px)"/>
-          <text class="face-text" transform="matrix(1,-.364,0,1,164,212)" fill-opacity=".9">LOGO</text>
-          <!-- bottom ring -->
-          <polygon points="40,220 150,260 260,220 260,232 150,272 40,232" fill="#03070E" stroke="#25344D"/>
-          <ellipse cx="150" cy="312" rx="110" ry="14" fill="rgba(31,78,158,.35)"/>
-        </svg>
+      <div class="ring-pos"><div class="ring" id="ring"></div></div>
+
+      <div class="cube">
+        <div class="cable" style="transform:translate3d(-120px,0,-120px)"></div>
+        <div class="cable" style="transform:translate3d(-120px,0,-120px) rotateY(90deg)"></div>
+        <div class="cable" style="transform:translate3d(120px,0,-120px)"></div>
+        <div class="cable" style="transform:translate3d(120px,0,-120px) rotateY(90deg)"></div>
+        <div class="cable" style="transform:translate3d(-120px,0,120px)"></div>
+        <div class="cable" style="transform:translate3d(-120px,0,120px) rotateY(90deg)"></div>
+        <div class="cable" style="transform:translate3d(120px,0,120px)"></div>
+        <div class="cable" style="transform:translate3d(120px,0,120px) rotateY(90deg)"></div>
+        <div class="face f1"><span>Il tuo<br>sponsor</span></div>
+        <div class="face f2 gold"><span>Il tuo<br>logo</span></div>
+        <div class="face f3"><span>Il tuo<br>sponsor</span></div>
+        <div class="face f4 gold"><span>Il tuo<br>logo</span></div>
+        <div class="cap t"></div>
+        <div class="cap b"></div>
       </div>
     </div>
   </div>
 
-  <div class="ribbon" aria-hidden="true">
-    <div class="ribbon-track">
-      <span>Il tuo sponsor qui</span><span class="y">●</span><span>Gottardo Arena</span><span class="y">●</span><span>Ribbon LED 220 m</span><span class="y">●</span><span>Il tuo sponsor qui</span><span class="y">●</span><span>Gottardo Arena</span><span class="y">●</span><span>Ribbon LED 220 m</span><span class="y">●</span>
-      <span>Il tuo sponsor qui</span><span class="y">●</span><span>Gottardo Arena</span><span class="y">●</span><span>Ribbon LED 220 m</span><span class="y">●</span><span>Il tuo sponsor qui</span><span class="y">●</span><span>Gottardo Arena</span><span class="y">●</span><span>Ribbon LED 220 m</span><span class="y">●</span>
+  <div class="wrap top">
+    <a class="brand" href="#" aria-label="Grassi Swiss, inizio pagina">
+      <img src="logo.png" alt="" width="36" height="36">
+      <span>Grassi Swiss</span>
+    </a>
+    <nav aria-label="Sezioni">
+      <a href="#versioni">Versioni</a>
+      <a href="#come-funziona">Come funziona</a>
+      <a href="#impianto">Impianto LED</a>
+    </nav>
+  </div>
+
+  <div class="wrap hero-copy">
+    <div>
+      <p class="where">Gottardo Arena, Ambrì</p>
+      <h1>La tua grafica<br>sui LED dell'arena</h1>
+    </div>
+    <div>
+      <p class="lede">Carica il logo o il video dello sponsor e guardalo in 3D sul cubo centrale, sul ribbon e sui LED sotto la tribuna, prima di andare in onda.</p>
+      <div class="actions">
+        <a class="btn btn-gold" href="anteprima-light.html">Apri la versione light</a>
+        <a class="btn btn-ghost" href="#versioni">Confronta le versioni</a>
+      </div>
+      <p class="private">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        I file restano sul tuo dispositivo.
+      </p>
     </div>
   </div>
 </header>
 
+<div class="ticker" aria-hidden="true"><div class="track" id="track"></div></div>
+
 <main>
-  <section id="versioni">
+  <section class="sec-a" id="versioni">
     <div class="wrap">
-      <div class="section-head">
-        <span class="kicker">Scegli la versione</span>
-        <h2>Due strumenti, stessa anteprima</h2>
-        <p>Entrambe mostrano la grafica sul cubo e sul ribbon. Cambia solo il modo in cui vengono gestiti i file.</p>
-      </div>
+      <h2>Due strumenti,<br>la stessa anteprima</h2>
+      <p class="intro">Entrambi mostrano la grafica sul cubo, sul ribbon e sui LED sotto. Cambia solo il modo in cui vengono gestiti i file.</p>
 
-      <div class="cards">
-        <a class="card" href="anteprima-light.html">
-          <div class="card-top"><span class="tag light">Light</span><span class="size">≈ 50 KB</span></div>
-          <h3>Versione leggera</h3>
-          <p>Per chi ha già i file nel formato giusto. Si apre all'istante, anche da telefono.</p>
-          <ul class="feat">
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Caricamento immediato</li>
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Ideale per immagini e video già esportati</li>
-          </ul>
-          <div class="formats" aria-label="Formati accettati"><span>PNG</span><span>JPG</span><span>MP4</span><span>MOV</span></div>
-          <span class="go">Apri la versione light <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-        </a>
+      <div class="versions">
+        <article class="ver light">
+          <div class="screen dots"><span>50 KB</span><small>peso della pagina</small></div>
+          <div class="ver-body">
+            <h3>Versione light</h3>
+            <p>Per chi ha già i file nel formato giusto. Si apre all'istante, anche da telefono.</p>
+            <ul class="pros">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>Caricamento immediato</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>Ideale per immagini e video già esportati</li>
+            </ul>
+            <ul class="formats" aria-label="Formati accettati">
+              <li>PNG</li><li>JPG</li><li>MP4</li><li>MOV</li>
+            </ul>
+            <a class="btn btn-blue" href="anteprima-light.html">Apri la versione light</a>
+          </div>
+        </article>
 
-        <a class="card featured" href="anteprima-convertitore.html">
-          <div class="card-top"><span class="tag full">Con convertitore</span><span class="size">≈ 13 MB</span></div>
-          <h3>Versione completa</h3>
-          <p>Converte i video direttamente nel browser, senza installare programmi.</p>
-          <ul class="feat">
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Accetta quasi ogni formato video</li>
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Più pesante: il primo caricamento richiede qualche secondo</li>
-          </ul>
-          <div class="formats" aria-label="Formati accettati"><span>PNG</span><span>JPG</span><span>MP4</span><span>MOV</span><span>MXF</span><span>AVI</span><span>MKV</span><span>WebM</span><span>WMV</span><span>MPEG</span><span>TS</span><span>+ altri</span></div>
-          <span class="go">Apri con convertitore <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-        </a>
+        <article class="ver full">
+          <div class="screen dots"><span>13 MB</span><small>peso della pagina</small></div>
+          <div class="ver-body">
+            <h3>Con convertitore</h3>
+            <p>Converte i video direttamente nel browser, senza installare programmi.</p>
+            <ul class="pros">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>Accetta quasi ogni formato video</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Più pesante: il primo caricamento richiede qualche secondo</li>
+            </ul>
+            <ul class="formats" aria-label="Formati accettati">
+              <li>PNG</li><li>JPG</li><li>MP4</li><li>MOV</li>
+              <li class="x">MXF</li><li class="x">AVI</li><li class="x">MKV</li><li class="x">WebM</li>
+              <li class="x">WMV</li><li class="x">MPEG</li><li class="x">TS</li><li class="x">e altri</li>
+            </ul>
+            <a class="btn btn-gold" href="anteprima-convertitore.html">Apri con il convertitore</a>
+          </div>
+        </article>
       </div>
+      <p class="which"><strong>Non sai quale scegliere?</strong> Se il tuo file è PNG, JPG, MP4 o MOV basta la light.</p>
     </div>
   </section>
 
-  <section id="come-funziona" class="alt">
+  <section class="sec-b" id="come-funziona">
     <div class="wrap">
-      <div class="section-head">
-        <span class="kicker">Come funziona</span>
-        <h2>Dall'idea all'arena in tre passi</h2>
-      </div>
-      <div class="steps">
-        <div class="step"><h4>Scegli la versione</h4><p>Light se hai già PNG, JPG, MP4 o MOV; completa se il video è in un altro formato.</p></div>
-        <div class="step"><h4>Carica la grafica</h4><p>Trascina il file sul cubo o sul ribbon. Puoi caricare contenuti diversi per ogni superficie.</p></div>
-        <div class="step"><h4>Guarda l'anteprima</h4><p>Ruota la vista e passa tra le inquadrature per vedere la grafica dagli spalti.</p></div>
-      </div>
+      <h2>Dall'idea all'arena<br>in tre passi</h2>
+      <p class="intro">Bastano pochi minuti, direttamente dal browser.</p>
+      <ol class="steps">
+        <li><span class="num" aria-hidden="true">1</span><h3>Scegli la versione</h3><p>Light se hai già PNG, JPG, MP4 o MOV; con convertitore se il video è in un altro formato.</p></li>
+        <li><span class="num" aria-hidden="true">2</span><h3>Carica la grafica</h3><p>Trascina il file sul cubo, sul ribbon o sui LED sotto. Puoi caricare contenuti diversi per ogni superficie, anche pannello per pannello.</p></li>
+        <li><span class="num" aria-hidden="true">3</span><h3>Guarda l'anteprima</h3><p>Ruota la vista e passa tra le inquadrature per vedere la grafica dagli spalti.</p></li>
+      </ol>
     </div>
   </section>
 
-  <section id="impianto">
+  <section class="sec-a" id="impianto">
     <div class="wrap">
-      <div class="section-head">
-        <span class="kicker">Impianto LED</span>
-        <h2>In scala reale</h2>
-        <p>Il modello dell'arena è semplificato; cubo e ribbon hanno le dimensioni vere.</p>
-      </div>
-      <div class="specs">
-        <div class="spec"><b>4</b><span>facce del cubo LED</span></div>
-        <div class="spec"><b>108 m²</b><span>superficie del cubo</span></div>
-        <div class="spec"><b>220 m</b><span>di ribbon attorno al secondo anello</span></div>
-        <div class="spec"><b>10,41 mm</b><span>pitch dei cabinet del ribbon</span></div>
+      <h2>Tre superfici,<br>in scala reale</h2>
+      <p class="intro">Il modello dell'arena è semplificato; cubo e ribbon hanno le dimensioni vere, i LED sotto sono calcolati a 144 px per metro.</p>
+      <div class="board">
+        <div class="cell">
+          <h3 class="zone">Cubo LED</h3>
+          <div class="val"><b>108</b><i>m²</i></div>
+          <ul class="spec">
+            <li>4 facce da 6 × 4,5 m</li>
+            <li>1296 × 972 px per faccia</li>
+            <li>Pitch 4,63 mm</li>
+          </ul>
+        </div>
+        <div class="cell">
+          <h3 class="zone">Ribbon LED</h3>
+          <div class="val"><b>220</b><i>m</i></div>
+          <ul class="spec">
+            <li>220 cabinet da 1 × 1 m sul secondo anello</li>
+            <li>Altezza 96 px, 96 px per metro</li>
+            <li>Pitch 10,41 mm</li>
+          </ul>
+        </div>
+        <div class="cell">
+          <h3 class="zone">LED sotto</h3>
+          <div class="val"><b>7</b><i>pannelli</i></div>
+          <ul class="spec">
+            <li>Sul parapetto della tribuna bassa, sopra il vetro</li>
+            <li>Altezza 144 px</li>
+            <li>Lato lungo, angolo e lato corto</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -279,10 +417,62 @@ footer .privacy{display:flex;align-items:center;gap:8px}
 
 <footer>
   <div class="wrap">
-    <span>Gottardo Arena · Ambrì</span>
-    <span class="privacy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Tutto avviene nel browser: i file non vengono inviati a nessun server.</span>
+    <a class="brand" href="#" aria-label="Grassi Swiss, torna all'inizio">
+      <img src="logo.png" alt="" width="30" height="30">
+      <span>Grassi Swiss</span>
+    </a>
+    <p>Gottardo Arena, Ambrì</p>
+    <p>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      Tutto avviene nel browser: i file non vengono inviati a nessun server.
+    </p>
   </div>
 </footer>
 
+<script>
+(function(){
+  var words = [["Il tuo sponsor qui",1],["Gottardo Arena",0],["Ribbon LED 220 m",0],["LED sotto",0]];
+
+  /* Ribbon ring: 48 segments, each showing its slice of one long strip */
+  var ring = document.getElementById("ring");
+  var strip = "";
+  for (var r = 0; r < 3; r++) words.forEach(function(w){ strip += '<b' + (w[1] ? ' class="g"' : '') + '>' + w[0] + '</b>'; });
+  var segs = "";
+  for (var i = 0; i < 48; i++) segs += '<div class="seg" style="--i:' + i + '"><div class="strip">' + strip + '</div></div>';
+  ring.innerHTML = segs;
+
+  /* Flat ticker */
+  var g = "";
+  for (var k = 0; k < 3; k++) words.forEach(function(w){ g += '<span class="item' + (w[1] ? ' g' : '') + '">' + w[0] + '</span><span class="pip"></span>'; });
+  document.getElementById("track").innerHTML = '<div class="group">' + g + '</div><div class="group">' + g + '</div>';
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) return;
+
+  /* Phone flashes in the stands */
+  var crowd = document.getElementById("crowd"), dots = "";
+  for (var c = 0; c < 70; c++){
+    var x = Math.random() * 100, y = 44 + Math.random() * 30;
+    dots += '<i style="left:' + x.toFixed(2) + '%;top:' + y.toFixed(2) + '%;--d:' + (4 + Math.random() * 7).toFixed(2) + 's;--delay:-' + (Math.random() * 10).toFixed(2) + 's"></i>';
+  }
+  crowd.innerHTML = dots;
+
+  /* Gentle camera parallax following the pointer */
+  var hero = document.getElementById("hero"), world = document.getElementById("world");
+  var tx = -9, ty = 0, gx = -9, gy = 0;
+  hero.addEventListener("pointermove", function(e){
+    var b = hero.getBoundingClientRect();
+    gy = ((e.clientX - b.left) / b.width - .5) * 14;
+    gx = -9 + ((e.clientY - b.top) / b.height - .5) * 6;
+  });
+  hero.addEventListener("pointerleave", function(){ gx = -9; gy = 0; });
+  (function loop(){
+    tx += (gx - tx) * .05; ty += (gy - ty) * .05;
+    world.style.setProperty("--tx", tx.toFixed(3) + "deg");
+    world.style.setProperty("--ty", ty.toFixed(3) + "deg");
+    requestAnimationFrame(loop);
+  })();
+})();
+</script>
 </body>
 </html>
